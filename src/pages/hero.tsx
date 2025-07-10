@@ -42,7 +42,7 @@ export default function Hero() {
             </div>
             <div className="flex gap-4 pt-4">
               <Button variant="ghost" size="icon" asChild>
-                <a href="#" target="_blank">
+                <a href="https://github.com/gabrideiros" target="_blank">
                   <Github className="h-5 w-5" />
                 </a>
               </Button>
@@ -58,7 +58,7 @@ export default function Hero() {
           <div className="relative h-[400px] w-[400px] md:h-[500px] md:w-[500px]">
             <div className="absolute inset-0 rounded-full" />
             <img
-              src="/character.gif"
+              src="./character.gif"
               alt="Personagem em Pixel Art"
               width={600}
               height={600}

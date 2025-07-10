@@ -13,7 +13,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { useState } from "react";
 
 const projects = [
   {
@@ -21,34 +20,32 @@ const projects = [
     description: "Minecraft Experience in Rio de Janeiro",
     tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
     link: "#",
-    image: "/rio.png",
+    image: "./rio.png",
   },
   {
     title: "Vernearth",
     description: "Minecraft Experience in Vernearth",
     tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
     link: "#",
-    image: "/vernearth.png",
+    image: "./vernearth.png",
   },
   {
     title: "Cooming Soon",
     description: ".-.",
     tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
     link: "#",
-    image: "/mystery.png",
+    image: "./mystery.png",
   },
   {
     title: "Cooming Soon",
     description: ".-.",
     tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
     link: "#",
-    image: "/mystery.png",
+    image: "./mystery.png",
   },
 ];
 
 export default function Projects() {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
     <section id="projects" className="py-20">
       <div className="container mx-auto px-4">
@@ -56,18 +53,12 @@ export default function Projects() {
           My Projects
         </h2>
 
-        <div
-          className="relative"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
+        <div className="relative">
           <Carousel
             opts={{
               align: "start",
             }}
             className="w-full"
-            isHovered={isHovered}
-            setIsHovered={setIsHovered}
           >
             <CarouselContent className="-ml-1">
               {projects.map((project, index) => (

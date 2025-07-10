@@ -1,4 +1,9 @@
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
+
 export default function Header() {
+  const [isOpen, setIsOpen] = useState(false);
+
   const navItems = [
     { name: "Projects", href: "#projects" },
     { name: "Skills", href: "#skills" },
@@ -12,15 +17,14 @@ export default function Header() {
         <div
           className="bg-gradient-to-tl from-purple-400 to-pink-600"
           style={{
-            maskImage: "url('/p_logo.svg')",
+            maskImage: "url('./p_logo.svg')",
             maskSize: "contain",
             maskRepeat: "no-repeat",
-            WebkitMaskImage: "url('/p_logo.svg')",
+            WebkitMaskImage: "url('./p_logo.svg')",
             width: "150px",
             height: "60px",
           }}
         />
-        {/* Desktop Nav */}
         <nav className="hidden items-center gap-6 md:flex">
           {navItems.map((item) => (
             <a
@@ -32,7 +36,27 @@ export default function Header() {
             </a>
           ))}
         </nav>
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="md:hidden text-muted-foreground hover:text-primary focus:outline-none"
+        >
+          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
       </div>
+      {isOpen && (
+        <nav className="md:hidden flex flex-col items-center gap-4 pb-4 px-6">
+          {navItems.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              onClick={() => setIsOpen(false)}
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              {item.name}
+            </a>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }
