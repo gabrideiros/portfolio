@@ -26,7 +26,7 @@ Welcome to my modern personal portfolio built with React, TypeScript, and styled
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/gabrideiros/poritfolio.git
+   git clone https://github.com/gabrideiros/portfolio.git
 
 
 Made with ❤️ by Gabriel Medeiros - Show your talent to the world! 🚀
