@@ -34,7 +34,7 @@ const projects = [
     description: "Dragons Expansion for Minecraft",
     tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
     link: "https://www.minecraft.net/pt-br/marketplace/pdp/venift/dragons-add--on/488351d9-6d5c-4f07-93fd-4954f4442b90",
-    image: "./dragons.png",
+    image: "./dragons.jpg",
   },
   {
     title: "Cooming Soon",
