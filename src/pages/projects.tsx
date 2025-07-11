@@ -17,7 +17,7 @@ import {
 const projects = [
   {
     title: "Rio de Janeiro",
-    description: "Minecraft Experience in Rio de Janeiro",
+    description: "Minecraft Experience in Rio de Janeiro - TBD",
     tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
     link: "#",
     image: "./rio.png",
@@ -26,15 +26,15 @@ const projects = [
     title: "Vernearth",
     description: "Minecraft Experience in Vernearth",
     tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
-    link: "#",
+    link: "https://discord.gg/aQXkkkXy",
     image: "./vernearth.png",
   },
   {
-    title: "Cooming Soon",
-    description: ".-.",
+    title: "Dragons Expansion",
+    description: "Dragons Expansion for Minecraft",
     tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
-    link: "#",
-    image: "./mystery.png",
+    link: "https://www.minecraft.net/pt-br/marketplace/pdp/venift/dragons-add--on/488351d9-6d5c-4f07-93fd-4954f4442b90",
+    image: "./dragons.png",
   },
   {
     title: "Cooming Soon",
