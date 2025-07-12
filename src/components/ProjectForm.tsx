@@ -126,7 +126,7 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
           <MediaPreview 
             url={formData.image} 
             type={formData.mediaType}
-            className="max-w-md rounded-lg overflow-hidden border"
+            className="w-full max-w-lg mx-auto"
           />
         </div>
       )}
