@@ -1,10 +1,10 @@
 import { ThemeProvider } from "./components/theme-provider";
-import Home from "./pages/home";
+import AdminPanel from "./pages/admin";
 
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <Home />
+      <AdminPanel />
     </ThemeProvider>
   );
 }
