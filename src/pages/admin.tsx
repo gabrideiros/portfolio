@@ -6,7 +6,6 @@ import type { Project } from '@/components/ProjectForm';
 import { ProjectCard } from '@/components/ProjectCard';
 import { Plus, Settings, FolderOpen, LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 
 // Initial projects data matching your portfolio structure
 const initialProjects: Project[] = [
@@ -52,7 +51,6 @@ export default function AdminPanel() {
   const [projects, setProjects] = useState<Project[]>(initialProjects);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | undefined>();
-  const navigate = useNavigate();
   const navigate = useNavigate();
 
   const handleAddProject = (projectData: Omit<Project, 'id'>) => {
@@ -100,11 +98,6 @@ export default function AdminPanel() {
     navigate('/admin');
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('admin-authenticated');
-    navigate('/admin');
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       {/* Header */}
@@ -142,10 +135,6 @@ export default function AdminPanel() {
                   />
                 </DialogContent>
               </Dialog>
-              
-              <Button variant="ghost" size="icon" onClick={handleLogout} className="text-muted-foreground hover:text-foreground">
-                <LogOut className="h-4 w-4" />
-              </Button>
               
               <Button variant="ghost" size="icon" onClick={handleLogout} className="text-muted-foreground hover:text-foreground">
                 <LogOut className="h-4 w-4" />
