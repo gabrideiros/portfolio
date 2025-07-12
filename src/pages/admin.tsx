@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { ProjectForm, Project } from '@/components/ProjectForm';
+import { ProjectForm } from '@/components/ProjectForm';
+import type { Project } from '@/components/ProjectForm';
 import { ProjectCard } from '@/components/ProjectCard';
 import { Plus, Settings, FolderOpen } from 'lucide-react';
 

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MediaPreview } from '@/components/MediaPreview';
 import { Edit, Trash2, ExternalLink } from 'lucide-react';
-import { Project } from '@/components/ProjectForm';
+import type { Project } from '@/components/ProjectForm';
 
 interface ProjectCardProps {
   project: Project;
