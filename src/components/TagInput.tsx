@@ -7,12 +7,15 @@ interface TagInputProps {
   tags: string[];
   onTagsChange: (tags: string[]) => void;
   placeholder?: string;
+  disabled?: boolean;
 }
 
-export function TagInput({ tags, onTagsChange, placeholder = "Add tags..." }: TagInputProps) {
+export function TagInput({ tags, onTagsChange, placeholder = "Add tags...", disabled = false }: TagInputProps) {
   const [inputValue, setInputValue] = useState('');
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (disabled) return;
+    
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
       addTag();
@@ -22,6 +25,8 @@ export function TagInput({ tags, onTagsChange, placeholder = "Add tags..." }: Ta
   };
 
   const addTag = () => {
+    if (disabled) return;
+    
     const trimmedValue = inputValue.trim();
     if (trimmedValue && !tags.includes(trimmedValue)) {
       onTagsChange([...tags, trimmedValue]);
@@ -30,6 +35,8 @@ export function TagInput({ tags, onTagsChange, placeholder = "Add tags..." }: Ta
   };
 
   const removeTag = (index: number) => {
+    if (disabled) return;
+    
     onTagsChange(tags.filter((_, i) => i !== index));
   };
 
@@ -42,6 +49,7 @@ export function TagInput({ tags, onTagsChange, placeholder = "Add tags..." }: Ta
         onBlur={addTag}
         placeholder={placeholder}
         className="h-10"
+        disabled={disabled}
       />
       {tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
@@ -51,6 +59,7 @@ export function TagInput({ tags, onTagsChange, placeholder = "Add tags..." }: Ta
               <button
                 type="button"
                 onClick={() => removeTag(index)}
+                disabled={disabled}
                 className="ml-1 hover:bg-destructive/20 rounded-full p-0.5 transition-colors"
               >
                 <X className="h-3 w-3" />

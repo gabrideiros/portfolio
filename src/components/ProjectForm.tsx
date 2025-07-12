@@ -5,25 +5,18 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { TagInput } from '@/components/TagInput';
 import MediaPreview from '@/components/MediaPreview';
-import { Save, X } from 'lucide-react';
-
-export interface Project {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-  image: string;
-  link: string;
-  mediaType: 'image' | 'video';
-}
+import { Save, X, Loader2 } from 'lucide-react';
+import type { Project } from '@/lib/api';
 
 interface ProjectFormProps {
   project?: Project;
   onSave: (project: Omit<Project, 'id'>) => void;
   onCancel: () => void;
+  loading?: boolean;
+  error?: string | null;
 }
 
-export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
+export function ProjectForm({ project, onSave, onCancel, loading = false, error }: ProjectFormProps) {
   const [formData, setFormData] = useState({
     title: project?.title || '',
     description: project?.description || '',
@@ -35,7 +28,7 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.title && formData.description && formData.image) {
+    if (formData.title && formData.description && formData.image && !loading) {
       onSave(formData);
     }
   };
@@ -57,6 +50,7 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
           placeholder="Enter project title"
           className="h-10"
           required
+          disabled={loading}
         />
       </div>
 
@@ -72,6 +66,7 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
           rows={4}
           className="resize-none"
           required
+          disabled={loading}
         />
       </div>
 
@@ -81,6 +76,7 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
           tags={formData.tags}
           onTagsChange={handleTagsChange}
           placeholder="Add tags (press Enter or comma to add)"
+          disabled={loading}
         />
       </div>
 
@@ -94,6 +90,7 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
             onValueChange={(value: 'image' | 'video') => 
               setFormData(prev => ({ ...prev, mediaType: value }))
             }
+            disabled={loading}
           >
             <SelectTrigger className="h-10">
               <SelectValue />
@@ -116,6 +113,7 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
             placeholder={formData.mediaType === 'video' ? 'YouTube URL' : 'Image URL'}
             className="h-10"
             required
+            disabled={loading}
           />
         </div>
       </div>
@@ -141,15 +139,42 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
           onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}
           placeholder="https://example.com"
           className="h-10"
+          disabled={loading}
         />
       </div>
 
+      {/* Error Message */}
+      {error && (
+        <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+          <p className="text-sm text-destructive">{error}</p>
+        </div>
+      )}
+
       <div className="flex gap-3 pt-6 border-t">
-        <Button type="submit" className="flex-1 h-10 shadow-sm">
-          <Save className="h-4 w-4 mr-2" />
-          {project ? 'Update Project' : 'Add Project'}
+        <Button 
+          type="submit" 
+          className="flex-1 h-10 shadow-sm" 
+          disabled={loading || !formData.title || !formData.description || !formData.image}
+        >
+          {loading ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              {project ? 'Updating...' : 'Creating...'}
+            </>
+          ) : (
+            <>
+              <Save className="h-4 w-4 mr-2" />
+              {project ? 'Update Project' : 'Add Project'}
+            </>
+          )}
         </Button>
-        <Button type="button" variant="outline" onClick={onCancel} className="h-10">
+        <Button 
+          type="button" 
+          variant="outline" 
+          onClick={onCancel} 
+          className="h-10"
+          disabled={loading}
+        >
           <X className="h-4 w-4 mr-2" />
           Cancel
         </Button>

@@ -2,79 +2,69 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ProjectForm } from '@/components/ProjectForm';
-import type { Project } from '@/components/ProjectForm';
+import type { Project } from '@/lib/api';
 import { ProjectCard } from '@/components/ProjectCard';
-import { Plus, Settings, FolderOpen, LogOut } from 'lucide-react';
+import { Plus, Settings, FolderOpen, LogOut, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
-// Initial projects data matching your portfolio structure
-const initialProjects: Project[] = [
-  {
-    id: '1',
-    title: "Rio de Janeiro",
-    description: "Minecraft Experience in Rio de Janeiro - TBD",
-    tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
-    link: "#",
-    image: "./rio.png",
-    mediaType: 'image'
-  },
-  {
-    id: '2',
-    title: "Vernearth",
-    description: "Minecraft Experience in Vernearth",
-    tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
-    link: "https://discord.gg/aQXkkkXy",
-    image: "./vernearth.png",
-    mediaType: 'image'
-  },
-  {
-    id: '3',
-    title: "Dragons Expansion",
-    description: "Dragons Expansion for Minecraft",
-    tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
-    link: "https://www.minecraft.net/pt-br/marketplace/pdp/venift/dragons-add--on/488351d9-6d5c-4f07-93fd-4954f4442b90",
-    image: "./dragons.jpg",
-    mediaType: 'image'
-  },
-  {
-    id: '4',
-    title: "Coming Soon",
-    description: ".-.",
-    tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
-    link: "#",
-    image: "./mystery.png",
-    mediaType: 'image'
-  },
-];
+import { useProjects } from '@/hooks/useProjects';
 
 export default function AdminPanel() {
-  const [projects, setProjects] = useState<Project[]>(initialProjects);
+  const { 
+    projects, 
+    loading, 
+    error, 
+    refetch, 
+    createProject, 
+    updateProject, 
+    deleteProject 
+  } = useProjects();
+  
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | undefined>();
+  const [actionLoading, setActionLoading] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleAddProject = (projectData: Omit<Project, 'id'>) => {
-    const newProject: Project = {
-      ...projectData,
-      id: Date.now().toString()
-    };
-    setProjects(prev => [...prev, newProject]);
-    setIsDialogOpen(false);
+  const handleAddProject = async (projectData: Omit<Project, 'id'>) => {
+    setActionLoading(true);
+    setActionError(null);
+    
+    const result = await createProject(projectData);
+    
+    if (result.success) {
+      setIsDialogOpen(false);
+    } else {
+      setActionError(result.error || 'Failed to create project');
+    }
+    
+    setActionLoading(false);
   };
 
-  const handleEditProject = (projectData: Omit<Project, 'id'>) => {
+  const handleEditProject = async (projectData: Omit<Project, 'id'>) => {
     if (editingProject) {
-      setProjects(prev => 
-        prev.map(p => p.id === editingProject.id ? { ...projectData, id: editingProject.id } : p)
-      );
-      setEditingProject(undefined);
-      setIsDialogOpen(false);
+      setActionLoading(true);
+      setActionError(null);
+      
+      const result = await updateProject(editingProject.id, projectData);
+      
+      if (result.success) {
+        setEditingProject(undefined);
+        setIsDialogOpen(false);
+      } else {
+        setActionError(result.error || 'Failed to update project');
+      }
+      
+      setActionLoading(false);
     }
   };
 
-  const handleDeleteProject = (id: string) => {
+  const handleDeleteProject = async (id: string) => {
     if (confirm('Are you sure you want to delete this project?')) {
-      setProjects(prev => prev.filter(p => p.id !== id));
+      const result = await deleteProject(id);
+      
+      if (!result.success) {
+        alert(result.error || 'Failed to delete project');
+      }
     }
   };
 
@@ -91,12 +81,19 @@ export default function AdminPanel() {
   const closeDialog = () => {
     setIsDialogOpen(false);
     setEditingProject(undefined);
+    setActionError(null);
   };
 
   const handleLogout = () => {
     localStorage.removeItem('admin-authenticated');
     navigate('/admin');
   };
+
+  const handleRefresh = () => {
+    refetch();
+  };
+
+  const isFormDisabled = actionLoading || loading;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
@@ -115,9 +112,19 @@ export default function AdminPanel() {
             </div>
             
             <div className="flex items-center gap-3">
+              {error && (
+                <Button variant="ghost" size="icon" onClick={handleRefresh} className="text-muted-foreground hover:text-foreground">
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
+              )}
+              
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button onClick={openAddDialog} className="gap-2 shadow-sm">
+                  <Button 
+                    onClick={openAddDialog} 
+                    className="gap-2 shadow-sm"
+                    disabled={isFormDisabled}
+                  >
                     <Plus className="h-4 w-4" />
                     <span className="hidden sm:inline">Add Project</span>
                   </Button>
@@ -132,6 +139,8 @@ export default function AdminPanel() {
                     project={editingProject}
                     onSave={editingProject ? handleEditProject : handleAddProject}
                     onCancel={closeDialog}
+                    loading={actionLoading}
+                    error={actionError}
                   />
                 </DialogContent>
               </Dialog>
@@ -146,14 +155,38 @@ export default function AdminPanel() {
 
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
+        {/* Status Messages */}
+        {error && (
+          <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+            <div className="flex items-center gap-2 text-destructive">
+              <AlertCircle className="h-4 w-4" />
+              <span className="font-medium">Connection Error</span>
+            </div>
+            <p className="text-sm text-destructive/80 mt-1">{error}</p>
+          </div>
+        )}
+
         <div className="mb-8">
           <div className="flex items-center gap-2 text-muted-foreground mb-2">
             <FolderOpen className="h-4 w-4" />
-            <span className="text-sm font-medium">Total Projects: {projects.length}</span>
+            <span className="text-sm font-medium">
+              Total Projects: {loading ? '...' : projects.length}
+            </span>
           </div>
         </div>
 
-        {projects.length === 0 ? (
+        {/* Loading State */}
+        {loading && (
+          <div className="flex items-center justify-center py-16">
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <Loader2 className="h-6 w-6 animate-spin" />
+              <span>Loading projects...</span>
+            </div>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && projects.length === 0 ? (
           <div className="text-center py-16">
             <div className="mx-auto w-24 h-24 bg-muted/50 rounded-2xl flex items-center justify-center mb-6">
               <FolderOpen className="h-10 w-10 text-muted-foreground" />
@@ -167,7 +200,10 @@ export default function AdminPanel() {
               Add Your First Project
             </Button>
           </div>
-        ) : (
+        )}
+
+        {/* Projects Grid */}
+        {!loading && projects.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {projects.map((project) => (
               <ProjectCard

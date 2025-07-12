@@ -13,45 +13,122 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { useProjects } from "@/hooks/useProjects";
+import { Loader2, AlertCircle, RefreshCw } from "lucide-react";
 
-const projects = [
+// Fallback projects for when API is not available
+const fallbackProjects = [
   {
+    id: "1",
     title: "Rio de Janeiro",
     description: "Minecraft Experience in Rio de Janeiro - TBD",
     tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
     link: "#",
     image: "./rio.png",
+    mediaType: "image" as const,
   },
   {
+    id: "2",
     title: "Vernearth",
     description: "Minecraft Experience in Vernearth",
     tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
     link: "https://discord.gg/aQXkkkXy",
     image: "./vernearth.png",
+    mediaType: "image" as const,
   },
   {
+    id: "3",
     title: "Dragons Expansion",
     description: "Dragons Expansion for Minecraft",
     tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
     link: "https://www.minecraft.net/pt-br/marketplace/pdp/venift/dragons-add--on/488351d9-6d5c-4f07-93fd-4954f4442b90",
     image: "./dragons.jpg",
+    mediaType: "image" as const,
   },
   {
-    title: "Cooming Soon",
+    id: "4",
+    title: "Coming Soon",
     description: ".-.",
     tags: ["Behavior Pack", "Resource Pack", "Custom Entities"],
     link: "#",
     image: "./mystery.png",
+    mediaType: "image" as const,
   },
 ];
 
 export default function Projects() {
+  const { projects: apiProjects, loading, error, refetch } = useProjects();
+  
+  // Use API projects if available, otherwise fallback to static projects
+  const projects = apiProjects.length > 0 ? apiProjects : fallbackProjects;
+
+  if (loading) {
+    return (
+      <section id="projects" className="py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="mb-12 text-3xl font-bold tracking-tight sm:text-4xl text-left">
+            My Projects
+          </h2>
+          <div className="flex items-center justify-center py-12">
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <Loader2 className="h-6 w-6 animate-spin" />
+              <span>Loading projects...</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error && apiProjects.length === 0) {
+    return (
+      <section id="projects" className="py-20">
+        <div className="container mx-auto px-4">
+          <h2 className="mb-12 text-3xl font-bold tracking-tight sm:text-4xl text-left">
+            My Projects
+          </h2>
+          <div className="flex flex-col items-center justify-center py-12 space-y-4">
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <AlertCircle className="h-6 w-6 text-orange-500" />
+              <span>Unable to load projects from server</span>
+            </div>
+            <p className="text-sm text-muted-foreground text-center max-w-md">
+              Showing fallback projects. The backend might be offline.
+            </p>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={refetch}
+              className="gap-2"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Try Again
+            </Button>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="projects" className="py-20">
       <div className="container mx-auto px-4">
-        <h2 className="mb-12 text-3xl font-bold tracking-tight sm:text-4xl text-left">
-          My Projects
-        </h2>
+        <div className="flex items-center justify-between mb-12">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-left">
+            My Projects
+          </h2>
+          {error && apiProjects.length > 0 && (
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={refetch}
+              className="gap-2 text-muted-foreground hover:text-foreground"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Refresh
+            </Button>
+          )}
+        </div>
 
         <div className="relative">
           <Carousel
@@ -103,7 +180,7 @@ export default function Projects() {
                             asChild
                             className="bg-transparent border-purple-400 text-white hover:bg-purple-900/30 hover:text-white mt-2"
                           >
-                            <a href={project.link}>View Details</a>
+                            <a href={project.link} target="_blank" rel="noopener noreferrer">View Details</a>
                           </Button>
                         </CardContent>
                       </div>

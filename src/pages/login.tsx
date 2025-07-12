@@ -4,8 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Lock, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
-const ADMIN_PASSWORD = 'mySecretPassword';
+import { apiClient } from '@/lib/api';
 
 export default function LoginPage() {
   const [password, setPassword] = useState('');
@@ -19,14 +18,12 @@ export default function LoginPage() {
     setIsLoading(true);
     setError('');
 
-    // Simulate a brief loading state for better UX
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    if (password === ADMIN_PASSWORD) {
-      localStorage.setItem('admin-authenticated', 'true');
+    const result = await apiClient.login(password);
+    
+    if (result.success) {
       navigate('/admin/dashboard');
     } else {
-      setError('Incorrect password. Please try again.');
+      setError(result.message || 'Login failed. Please try again.');
       setPassword('');
     }
     
