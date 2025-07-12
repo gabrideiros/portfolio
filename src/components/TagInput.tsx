@@ -41,16 +41,17 @@ export function TagInput({ tags, onTagsChange, placeholder = "Add tags..." }: Ta
         onKeyDown={handleKeyDown}
         onBlur={addTag}
         placeholder={placeholder}
+        className="h-10"
       />
       {tags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {tags.map((tag, index) => (
-            <Badge key={index} variant="secondary" className="flex items-center gap-1">
+            <Badge key={index} variant="secondary" className="flex items-center gap-1 px-2 py-1 bg-muted/50">
               {tag}
               <button
                 type="button"
                 onClick={() => removeTag(index)}
-                className="ml-1 hover:bg-destructive/20 rounded-full p-0.5"
+                className="ml-1 hover:bg-destructive/20 rounded-full p-0.5 transition-colors"
               >
                 <X className="h-3 w-3" />
               </button>

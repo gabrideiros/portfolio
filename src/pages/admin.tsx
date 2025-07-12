@@ -4,7 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { ProjectForm } from '@/components/ProjectForm';
 import type { Project } from '@/components/ProjectForm';
 import { ProjectCard } from '@/components/ProjectCard';
-import { Plus, Settings, FolderOpen } from 'lucide-react';
+import { Plus, Settings, FolderOpen, LogOut } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 // Initial projects data matching your portfolio structure
 const initialProjects: Project[] = [
@@ -50,6 +51,7 @@ export default function AdminPanel() {
   const [projects, setProjects] = useState<Project[]>(initialProjects);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | undefined>();
+  const navigate = useNavigate();
 
   const handleAddProject = (projectData: Omit<Project, 'id'>) => {
     const newProject: Project = {
@@ -91,71 +93,82 @@ export default function AdminPanel() {
     setEditingProject(undefined);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('admin-authenticated');
+    navigate('/admin');
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
       {/* Header */}
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-6">
+      <header className="border-b border-border/40 bg-background/80 backdrop-blur-sm sticky top-0 z-40">
+        <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-lg">
+              <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-xl shadow-sm">
                 <Settings className="h-6 w-6 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold">Portfolio Admin</h1>
-                <p className="text-muted-foreground">Manage your projects</p>
+                <h1 className="text-2xl font-bold tracking-tight">Portfolio Admin</h1>
+                <p className="text-sm text-muted-foreground">Manage your projects</p>
               </div>
             </div>
             
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={openAddDialog} className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  Add Project
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                <DialogHeader>
-                  <DialogTitle>
-                    {editingProject ? 'Edit Project' : 'Add New Project'}
-                  </DialogTitle>
-                </DialogHeader>
-                <ProjectForm
-                  project={editingProject}
-                  onSave={editingProject ? handleEditProject : handleAddProject}
-                  onCancel={closeDialog}
-                />
-              </DialogContent>
-            </Dialog>
+            <div className="flex items-center gap-3">
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button onClick={openAddDialog} className="gap-2 shadow-sm">
+                    <Plus className="h-4 w-4" />
+                    <span className="hidden sm:inline">Add Project</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>
+                      {editingProject ? 'Edit Project' : 'Add New Project'}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <ProjectForm
+                    project={editingProject}
+                    onSave={editingProject ? handleEditProject : handleAddProject}
+                    onCancel={closeDialog}
+                  />
+                </DialogContent>
+              </Dialog>
+              
+              <Button variant="ghost" size="icon" onClick={handleLogout} className="text-muted-foreground hover:text-foreground">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-6">
+      <main className="container mx-auto px-6 py-8">
+        <div className="mb-8">
           <div className="flex items-center gap-2 text-muted-foreground mb-2">
             <FolderOpen className="h-4 w-4" />
-            <span className="text-sm">Total Projects: {projects.length}</span>
+            <span className="text-sm font-medium">Total Projects: {projects.length}</span>
           </div>
         </div>
 
         {projects.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="mx-auto w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-4">
-              <FolderOpen className="h-8 w-8 text-muted-foreground" />
+          <div className="text-center py-16">
+            <div className="mx-auto w-24 h-24 bg-muted/50 rounded-2xl flex items-center justify-center mb-6">
+              <FolderOpen className="h-10 w-10 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">No projects yet</h3>
-            <p className="text-muted-foreground mb-4">
+            <h3 className="text-xl font-semibold mb-2">No projects yet</h3>
+            <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
               Get started by adding your first project
             </p>
-            <Button onClick={openAddDialog}>
+            <Button onClick={openAddDialog} size="lg" className="shadow-sm">
               <Plus className="h-4 w-4 mr-2" />
               Add Your First Project
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {projects.map((project) => (
               <ProjectCard
                 key={project.id}

@@ -45,9 +45,9 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6 p-1">
       <div className="space-y-2">
-        <label htmlFor="title" className="text-sm font-medium">
+        <label htmlFor="title" className="text-sm font-medium text-foreground">
           Project Title *
         </label>
         <Input
@@ -55,12 +55,13 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
           value={formData.title}
           onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
           placeholder="Enter project title"
+          className="h-10"
           required
         />
       </div>
 
       <div className="space-y-2">
-        <label htmlFor="description" className="text-sm font-medium">
+        <label htmlFor="description" className="text-sm font-medium text-foreground">
           Description *
         </label>
         <Textarea
@@ -68,13 +69,14 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
           value={formData.description}
           onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
           placeholder="Describe your project"
-          rows={3}
+          rows={4}
+          className="resize-none"
           required
         />
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium">Tags</label>
+        <label className="text-sm font-medium text-foreground">Tags</label>
         <TagInput
           tags={formData.tags}
           onTagsChange={handleTagsChange}
@@ -84,7 +86,7 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label htmlFor="mediaType" className="text-sm font-medium">
+          <label htmlFor="mediaType" className="text-sm font-medium text-foreground">
             Media Type
           </label>
           <Select
@@ -93,7 +95,7 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
               setFormData(prev => ({ ...prev, mediaType: value }))
             }
           >
-            <SelectTrigger>
+            <SelectTrigger className="h-10">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -104,7 +106,7 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="image" className="text-sm font-medium">
+          <label htmlFor="image" className="text-sm font-medium text-foreground">
             Media URL *
           </label>
           <Input
@@ -112,6 +114,7 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
             value={formData.image}
             onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
             placeholder={formData.mediaType === 'video' ? 'YouTube URL' : 'Image URL'}
+            className="h-10"
             required
           />
         </div>
@@ -119,17 +122,17 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
 
       {formData.image && (
         <div className="space-y-2">
-          <label className="text-sm font-medium">Media Preview</label>
+          <label className="text-sm font-medium text-foreground">Media Preview</label>
           <MediaPreview 
             url={formData.image} 
             type={formData.mediaType}
-            className="max-w-md"
+            className="max-w-md rounded-lg overflow-hidden border"
           />
         </div>
       )}
 
       <div className="space-y-2">
-        <label htmlFor="link" className="text-sm font-medium">
+        <label htmlFor="link" className="text-sm font-medium text-foreground">
           External Link (optional)
         </label>
         <Input
@@ -137,15 +140,16 @@ export function ProjectForm({ project, onSave, onCancel }: ProjectFormProps) {
           value={formData.link}
           onChange={(e) => setFormData(prev => ({ ...prev, link: e.target.value }))}
           placeholder="https://example.com"
+          className="h-10"
         />
       </div>
 
-      <div className="flex gap-3 pt-4">
-        <Button type="submit" className="flex-1">
+      <div className="flex gap-3 pt-6 border-t">
+        <Button type="submit" className="flex-1 h-10 shadow-sm">
           <Save className="h-4 w-4 mr-2" />
           {project ? 'Update Project' : 'Add Project'}
         </Button>
-        <Button type="button" variant="outline" onClick={onCancel}>
+        <Button type="button" variant="outline" onClick={onCancel} className="h-10">
           <X className="h-4 w-4 mr-2" />
           Cancel
         </Button>

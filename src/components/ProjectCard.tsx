@@ -14,29 +14,29 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+    <Card className="group overflow-hidden hover:shadow-xl hover:shadow-black/5 transition-all duration-300 border-0 bg-card/50 backdrop-blur-sm hover:-translate-y-1">
       <div className="aspect-video">
         <MediaPreview 
           url={project.image} 
           type={project.mediaType}
-          className="w-full"
+          className="w-full group-hover:scale-105 transition-transform duration-300"
         />
       </div>
       
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <CardTitle className="text-lg">{project.title}</CardTitle>
-            <CardDescription className="mt-1">
+            <CardTitle className="text-lg font-semibold tracking-tight">{project.title}</CardTitle>
+            <CardDescription className="mt-2 text-sm leading-relaxed">
               {project.description}
             </CardDescription>
           </div>
-          <div className="flex gap-1 ml-2">
+          <div className="flex gap-1 ml-3 opacity-0 group-hover:opacity-100 transition-opacity">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => onEdit(project)}
-              className="h-8 w-8"
+              className="h-8 w-8 hover:bg-primary/10"
             >
               <Edit className="h-4 w-4" />
             </Button>
@@ -44,7 +44,7 @@ export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
               variant="ghost"
               size="icon"
               onClick={() => onDelete(project.id)}
-              className="h-8 w-8 text-destructive hover:text-destructive"
+              className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -52,12 +52,12 @@ export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
         </div>
       </CardHeader>
 
-      <CardContent className="pt-0">
-        <div className="space-y-3">
+      <CardContent className="pt-0 pb-6">
+        <div className="space-y-4">
           {project.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1">
+            <div className="flex flex-wrap gap-1.5">
               {project.tags.map((tag, index) => (
-                <Badge key={index} variant="secondary" className="text-xs">
+                <Badge key={index} variant="secondary" className="text-xs px-2 py-1 bg-muted/50">
                   {tag}
                 </Badge>
               ))}
@@ -65,7 +65,7 @@ export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
           )}
           
           {project.link && (
-            <Button variant="outline" size="sm" asChild className="w-full">
+            <Button variant="outline" size="sm" asChild className="w-full shadow-sm hover:shadow-md transition-shadow">
               <a href={project.link} target="_blank" rel="noopener noreferrer">
                 <ExternalLink className="h-4 w-4 mr-2" />
                 View Project
