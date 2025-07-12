@@ -156,7 +156,7 @@ export default function AdminPanel() {
       {/* Main Content */}
       <main className="container mx-auto px-6 py-8">
         {/* Status Messages */}
-        {error && (
+        {error ? (
           <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
             <div className="flex items-center gap-2 text-destructive">
               <AlertCircle className="h-4 w-4" />
@@ -164,7 +164,7 @@ export default function AdminPanel() {
             </div>
             <p className="text-sm text-destructive/80 mt-1">{error}</p>
           </div>
-        )}
+        ) : null}
 
         <div className="mb-8">
           <div className="flex items-center gap-2 text-muted-foreground mb-2">
